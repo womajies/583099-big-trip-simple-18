@@ -34,7 +34,11 @@ export default class TripPresenter {
   #renderTripComponent = () => {
     render(new SortView(), this.#tripContainer);
 
-    render(this.#pointListComponent, this.#tripContainer);
+    if (this.#tripPoints.length) {
+      render(this.#pointListComponent, this.#tripContainer);
+    } else {
+      render(new PointListEmptyView(), this.#tripContainer);
+    }
 
     for (let i = 0; i < this.#tripPoints.length; i++) {
       this.#renderPoint(this.#tripPoints[i], this.#offersByType, this.#destinations);
