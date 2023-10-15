@@ -182,6 +182,8 @@ const createPointEditTemplate = (point, allOffers, destinations) => {
 };
 
 export default class PointEditView {
+  #element = null;
+
   constructor(point, allOffers, destinations) {
     this.point = point || {
       basePrice: '',
@@ -196,19 +198,19 @@ export default class PointEditView {
     this.destinations = destinations || [];
   }
 
-  getTemplate() {
+  get template() {
     return createPointEditTemplate(this.point, this.allOffers, this.destinations);
   }
 
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
     }
 
-    return this.element;
+    return this.#element;
   }
 
   removeElement() {
-    this.element = null;
+    this.#element = null;
   }
 }

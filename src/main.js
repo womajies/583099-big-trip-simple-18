@@ -11,8 +11,8 @@ const siteContentElement = document.querySelector('.trip-events');
 const pointsModel = new PointsModel();
 const offersModel = new OffersModel();
 const destinationsModel = new DestinationsModel();
-const tripPresenter = new TripPresenter();
+const tripPresenter = new TripPresenter(siteContentElement, pointsModel, offersModel, destinationsModel);
 
 render(new FilterView(), siteFiltersElement);
 
-tripPresenter.init(siteContentElement, pointsModel, offersModel, destinationsModel);
+tripPresenter.init();
