@@ -86,12 +86,12 @@ const offersByType = [
   {
     'type': 'check-in',
     'offers': [{
-      'id': 1,
+      'id': 14,
       'title': 'Choose seats',
       'price': 5
     },
     {
-      'id': 2,
+      'id': 15,
       'title': 'Add meal',
       'price': 15
     }]
@@ -99,12 +99,12 @@ const offersByType = [
   {
     'type': 'sightseeing',
     'offers': [{
-      'id': 1,
+      'id': 16,
       'title': 'Choose the radio station',
       'price': 120
     },
     {
-      'id': 2,
+      'id': 17,
       'title': 'Upgrade to a business class',
       'price': 140
     }]
@@ -112,12 +112,12 @@ const offersByType = [
   {
     'type': 'restaurant',
     'offers': [{
-      'id': 1,
+      'id': 18,
       'title': 'Choose the radio station',
       'price': 120
     },
     {
-      'id': 2,
+      'id': 19,
       'title': 'Upgrade to a business class',
       'price': 140
     }]
