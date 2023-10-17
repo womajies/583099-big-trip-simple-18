@@ -3,30 +3,26 @@ import PointListView from '../view/point-list-view.js';
 import PointView from '../view/point-view.js';
 import PointFormView from '../view/point-form-view.js';
 import PointListEmptyView from '../view/point-list-empty-view.js';
-import { render } from '../render.js';
+import { render } from '../framework/render.js';
 
 export default class TripPresenter {
   #tripContainer = null;
   #pointsModel = null;
-  #offersModel = null;
-  #destinationsModel = null;
-  #tripPoints = [];
-  #offersByType = [];
-  #destinations = [];
+  #points = [];
+  #pointsOffersByType = [];
+  #pointsDestinations = [];
 
   #pointListComponent = new PointListView();
 
-  constructor(tripContainer, pointsModel, offersModel, destinationsModel) {
+  constructor(tripContainer, pointsModel) {
     this.#tripContainer = tripContainer;
     this.#pointsModel = pointsModel;
-    this.#offersModel = offersModel;
-    this.#destinationsModel = destinationsModel;
   }
 
   init = () => {
-    this.#tripPoints = [...this.#pointsModel.points];
-    this.#offersByType = [...this.#offersModel.offers];
-    this.#destinations = [...this.#destinationsModel.destinations];
+    this.#points = [...this.#pointsModel.points];
+    this.#pointsOffersByType = [...this.#pointsModel.offersByType];
+    this.#pointsDestinations = [...this.#pointsModel.destinations];
 
     this.#renderTripComponent();
   };
@@ -34,14 +30,14 @@ export default class TripPresenter {
   #renderTripComponent = () => {
     render(new SortView(), this.#tripContainer);
 
-    if (this.#tripPoints.length) {
+    if (this.#points.length) {
       render(this.#pointListComponent, this.#tripContainer);
     } else {
       render(new PointListEmptyView(), this.#tripContainer);
     }
 
-    for (let i = 0; i < this.#tripPoints.length; i++) {
-      this.#renderPoint(this.#tripPoints[i], this.#offersByType, this.#destinations);
+    for (let i = 0; i < this.#points.length; i++) {
+      this.#renderPoint(this.#points[i], this.#pointsOffersByType, this.#pointsDestinations);
     }
   };
 

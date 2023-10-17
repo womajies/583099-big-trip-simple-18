@@ -1,6 +1,15 @@
-import { createElement } from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 import { humanizePointDate } from '../utils.js';
 import { CITIES } from '../mock/const.js';
+
+const BLANK_POINT = {
+  basePrice: 0,
+  dateFrom: new Date(),
+  dateTo: new Date(),
+  destination: 1,
+  offers: [11, 12, 13],
+  type: 'flight'
+};
 
 const createOffersTemplate = (offers, checkedOffers) => {
   let offersList = '';
@@ -181,36 +190,19 @@ const createPointEditTemplate = (point, allOffers, destinations) => {
   );
 };
 
-export default class PointEditView {
-  #element = null;
+export default class PointEditView extends AbstractView {
+  #allOffers = null;
+  #destinations = null;
+  #point = null;
 
-  constructor(point, allOffers, destinations) {
-    this.point = point || {
-      basePrice: '',
-      dateFrom: new Date(),
-      dateTo: new Date(),
-      destination: null,
-      offers: [],
-      type: 'taxi'
-    };
-
-    this.allOffers = allOffers || [];
-    this.destinations = destinations || [];
+  constructor(point = BLANK_POINT, allOffers = [], destinations = []) {
+    super();
+    this.#point = point;
+    this.#allOffers = allOffers;
+    this.#destinations = destinations;
   }
 
   get template() {
-    return createPointEditTemplate(this.point, this.allOffers, this.destinations);
-  }
-
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
-  }
-
-  removeElement() {
-    this.#element = null;
+    return createPointEditTemplate(this.#point, this.#allOffers, this.#destinations);
   }
 }
