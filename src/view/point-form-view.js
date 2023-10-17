@@ -194,15 +194,32 @@ export default class PointEditView extends AbstractView {
   #allOffers = null;
   #destinations = null;
   #point = null;
+  #handleFormSubmit = null;
+  #handleCloseEditClick = null;
 
-  constructor(point = BLANK_POINT, allOffers = [], destinations = []) {
+  constructor({ point = BLANK_POINT, allOffers = [], destinations = [], onFormSubmit, onCloseEditClick }) {
     super();
     this.#point = point;
     this.#allOffers = allOffers;
     this.#destinations = destinations;
+    this.#handleFormSubmit = onFormSubmit;
+    this.#handleCloseEditClick = onCloseEditClick;
+
+    this.element.querySelector('form').addEventListener('submit', this.#submitClickHandler);
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#closeEditClickHandler);
   }
 
   get template() {
     return createPointEditTemplate(this.#point, this.#allOffers, this.#destinations);
   }
+
+  #submitClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleFormSubmit();
+  };
+
+  #closeEditClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleCloseEditClick();
+  };
 }

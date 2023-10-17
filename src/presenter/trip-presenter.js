@@ -3,7 +3,7 @@ import PointListView from '../view/point-list-view.js';
 import PointView from '../view/point-view.js';
 import PointFormView from '../view/point-form-view.js';
 import PointListEmptyView from '../view/point-list-empty-view.js';
-import { render } from '../framework/render.js';
+import { render, remove, replace } from '../framework/render.js';
 
 export default class TripPresenter {
   #tripContainer = null;
@@ -14,7 +14,7 @@ export default class TripPresenter {
 
   #pointListComponent = new PointListView();
 
-  constructor(tripContainer, pointsModel) {
+  constructor({ tripContainer, pointsModel }) {
     this.#tripContainer = tripContainer;
     this.#pointsModel = pointsModel;
   }
@@ -42,14 +42,6 @@ export default class TripPresenter {
   };
 
   #renderPoint = (point, offers, destinations) => {
-    const pointComponent = new PointView(point, offers, destinations);
-    let pointFormComponent;
-
-    const replaceFormToPoint = () => {
-      this.#pointListComponent.element.replaceChild(pointComponent.element, pointFormComponent.element);
-      pointFormComponent.removeElement();
-    };
-
     const onEscKeyDown = (evt) => {
       if (evt.key === 'Escape' || evt.key === 'Esc') {
         evt.preventDefault();
@@ -58,25 +50,40 @@ export default class TripPresenter {
       }
     };
 
-    const replacePointToForm = () => {
-      pointFormComponent = new PointFormView(point, offers, destinations);
-      this.#pointListComponent.element.replaceChild(pointFormComponent.element, pointComponent.element);
-
-      pointFormComponent.element.querySelector('form').addEventListener('submit', (evt) => {
-        evt.preventDefault();
-        replaceFormToPoint();
-        document.removeEventListener('keydown', onEscKeyDown);
-      });
-
-      pointFormComponent.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
-        replaceFormToPoint();
-      });
-    };
-
-    pointComponent.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
-      replacePointToForm();
-      document.addEventListener('keydown', onEscKeyDown);
+    const pointComponent = new PointView({
+      point,
+      allOffers: offers,
+      destinations,
+      onEditClick: () => {
+        replacePointToForm.call(this);
+        document.addEventListener('keydown', onEscKeyDown);
+      }
     });
+
+    let pointFormComponent;
+
+    function replaceFormToPoint() {
+      replace(pointComponent, pointFormComponent);
+      remove(pointFormComponent);
+    }
+
+    function replacePointToForm() {
+      pointFormComponent = new PointFormView({
+        point,
+        allOffers: offers,
+        destinations,
+        onFormSubmit: () => {
+          replaceFormToPoint.call(this);
+          document.removeEventListener('keydown', onEscKeyDown);
+        },
+        onCloseEditClick: () => {
+          replaceFormToPoint.call(this);
+          document.removeEventListener('keydown', onEscKeyDown);
+        }
+      });
+
+      replace(pointFormComponent, pointComponent);
+    }
 
     render(pointComponent, this.#pointListComponent.element);
   };
