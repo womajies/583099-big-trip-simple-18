@@ -1,6 +1,15 @@
-import { createElement } from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 import { humanizePointDate } from '../utils.js';
 import { CITIES } from '../mock/const.js';
+
+const BLANK_POINT = {
+  basePrice: 0,
+  dateFrom: new Date(),
+  dateTo: new Date(),
+  destination: 1,
+  offers: [11, 12, 13],
+  type: 'flight'
+};
 
 const createOffersTemplate = (offers, checkedOffers) => {
   let offersList = '';
@@ -181,36 +190,36 @@ const createPointEditTemplate = (point, allOffers, destinations) => {
   );
 };
 
-export default class PointEditView {
-  #element = null;
+export default class PointEditView extends AbstractView {
+  #allOffers = null;
+  #destinations = null;
+  #point = null;
+  #handleFormSubmit = null;
+  #handleCloseEditClick = null;
 
-  constructor(point, allOffers, destinations) {
-    this.point = point || {
-      basePrice: '',
-      dateFrom: new Date(),
-      dateTo: new Date(),
-      destination: null,
-      offers: [],
-      type: 'taxi'
-    };
+  constructor({ point = BLANK_POINT, allOffers = [], destinations = [], onFormSubmit, onCloseEditClick }) {
+    super();
+    this.#point = point;
+    this.#allOffers = allOffers;
+    this.#destinations = destinations;
+    this.#handleFormSubmit = onFormSubmit;
+    this.#handleCloseEditClick = onCloseEditClick;
 
-    this.allOffers = allOffers || [];
-    this.destinations = destinations || [];
+    this.element.querySelector('form').addEventListener('submit', this.#submitClickHandler);
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#closeEditClickHandler);
   }
 
   get template() {
-    return createPointEditTemplate(this.point, this.allOffers, this.destinations);
+    return createPointEditTemplate(this.#point, this.#allOffers, this.#destinations);
   }
 
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
+  #submitClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleFormSubmit();
+  };
 
-    return this.#element;
-  }
-
-  removeElement() {
-    this.#element = null;
-  }
+  #closeEditClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleCloseEditClick();
+  };
 }
