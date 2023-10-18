@@ -1,5 +1,5 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import { humanizePointDate } from '../utils.js';
+import { humanizePointDate } from '../utils/point.js';
 import { CITIES } from '../mock/const.js';
 
 const BLANK_POINT = {
@@ -75,7 +75,7 @@ const createDatalistOptionTemplate = () => {
 const createPointEditTemplate = (point, allOffers, destinations) => {
   const { basePrice, type, destination, offers, dateFrom, dateTo } = point;
 
-  const DATE_FORMAT = 'DD/MM/YY hh:mm';
+  const DATE_FORMAT = 'DD/MM/YY HH:mm';
 
   const myDestination = destinations.find((item) => item.id === destination);
 
