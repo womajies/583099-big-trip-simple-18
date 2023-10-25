@@ -32,9 +32,9 @@ const createPointTemplate = (point, allOffers, destinations) => {
   const myDestination = destinations.find((item) => item.id === destination);
 
   const offersByType = allOffers.find((item) => item.type === type);
-  const checkedOffers = offersByType.offers.filter((item) => offers.includes(item.id));
+  const checkedOffers = offersByType?.offers.filter((item) => offers.includes(item.id));
 
-  const offersTemplate = checkedOffers.length ? createOffersTemplate(checkedOffers) : '';
+  const offersTemplate = checkedOffers?.length ? createOffersTemplate(checkedOffers) : '';
 
   return (
     `<li class="trip-events__item">
@@ -43,7 +43,7 @@ const createPointTemplate = (point, allOffers, destinations) => {
         <div class="event__type">
           <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
         </div>
-        <h3 class="event__title">${type} &mdash; ${myDestination.name}</h3>
+        <h3 class="event__title">${type} &mdash; ${myDestination?.name}</h3>
         <div class="event__schedule">
           <p class="event__time">
             <time class="event__start-time" datetime="${dateFrom}">${humanizeTimeFrom}</time>
@@ -70,7 +70,7 @@ export default class PointView extends AbstractView {
   #destinations = null;
   #handleEditClick = null;
 
-  constructor({ point, allOffers, destinations, onEditClick }) {
+  constructor({ point, allOffers = [], destinations = [], onEditClick }) {
     super();
     this.#point = point;
     this.#allOffers = allOffers;
