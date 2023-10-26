@@ -4,6 +4,12 @@ const FilterType = {
   FUTURE: 'future',
 };
 
-const SortType = ['day', 'event', 'time', 'price', 'offers'];
+const SortType = {
+  DAY: 'day',
+  EVENT: 'event',
+  TIME: 'time',
+  PRICE: 'price',
+  OFFERS: 'offers',
+};
 
 export { FilterType, SortType };
