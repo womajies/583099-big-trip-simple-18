@@ -1,5 +1,5 @@
 const POINT_TYPES = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
-const CITIES = ['limassol', 'Makhachkala', 'London', 'New York', 'Dubai', 'Tokio'];
+const CITIES = ['Limassol', 'Makhachkala', 'London', 'New York', 'Dubai', 'Tokio'];
 const DESCRIPTIONS = [
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
   'Cras aliquet varius magna, non porta ligula feugiat eget.',

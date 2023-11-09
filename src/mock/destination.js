@@ -5,10 +5,10 @@ const destinations = [
   {
     'id': 1,
     'description': `${getRandomArrayElement(DESCRIPTIONS)}`,
-    'name': `${getRandomArrayElement(CITIES)}`,
+    'name': CITIES[0],
     'pictures': [
       {
-        'src': `https://loremflickr.com/248/152?random=${getRandomInteger(0, 10)}`,
+        'src': `https://loremflickr.com/248/152?random=${getRandomInteger(0, 100)}`,
         'description': 'Chamonix parliament building'
       }
     ]
@@ -16,14 +16,14 @@ const destinations = [
   {
     'id': 2,
     'description': `${getRandomArrayElement(DESCRIPTIONS)}`,
-    'name': `${getRandomArrayElement(CITIES)}`,
+    'name': CITIES[1],
     'pictures': [
       {
-        'src': `https://loremflickr.com/248/152?random=${getRandomInteger(0, 10)}`,
+        'src': `https://loremflickr.com/248/152?random=${getRandomInteger(0, 100)}`,
         'description': 'Chamonix parliament building'
       },
       {
-        'src': `https://loremflickr.com/248/152?random=${getRandomInteger(0, 10)}`,
+        'src': `https://loremflickr.com/248/152?random=${getRandomInteger(0, 100)}`,
         'description': 'Chamonix parliament building'
       }
     ]
@@ -31,18 +31,18 @@ const destinations = [
   {
     'id': 3,
     'description': `${getRandomArrayElement(DESCRIPTIONS)}`,
-    'name': `${getRandomArrayElement(CITIES)}`,
+    'name': CITIES[2],
     'pictures': [
       {
-        'src': `https://loremflickr.com/248/152?random=${getRandomInteger(0, 10)}`,
+        'src': `https://loremflickr.com/248/152?random=${getRandomInteger(0, 100)}`,
         'description': 'Chamonix parliament building'
       },
       {
-        'src': `https://loremflickr.com/248/152?random=${getRandomInteger(0, 10)}`,
+        'src': `https://loremflickr.com/248/152?random=${getRandomInteger(0, 100)}`,
         'description': 'Chamonix parliament building'
       },
       {
-        'src': `https://loremflickr.com/248/152?random=${getRandomInteger(0, 10)}`,
+        'src': `https://loremflickr.com/248/152?random=${getRandomInteger(0, 100)}`,
         'description': 'Chamonix parliament building'
       }
     ]
@@ -50,10 +50,32 @@ const destinations = [
   {
     'id': 4,
     'description': `${getRandomArrayElement(DESCRIPTIONS)}`,
-    'name': `${getRandomArrayElement(CITIES)}`,
+    'name': CITIES[3],
     'pictures': [
       {
-        'src': `https://loremflickr.com/248/152?random=${getRandomInteger(0, 10)}`,
+        'src': `https://loremflickr.com/248/152?random=${getRandomInteger(0, 100)}`,
+        'description': 'Chamonix parliament building'
+      }
+    ]
+  },
+  {
+    'id': 5,
+    'description': `${getRandomArrayElement(DESCRIPTIONS)}`,
+    'name': CITIES[4],
+    'pictures': [
+      {
+        'src': `https://loremflickr.com/248/152?random=${getRandomInteger(0, 100)}`,
+        'description': 'Chamonix parliament building'
+      }
+    ]
+  },
+  {
+    'id': 6,
+    'description': `${getRandomArrayElement(DESCRIPTIONS)}`,
+    'name': CITIES[5],
+    'pictures': [
+      {
+        'src': `https://loremflickr.com/248/152?random=${getRandomInteger(0, 100)}`,
         'description': 'Chamonix parliament building'
       }
     ]
