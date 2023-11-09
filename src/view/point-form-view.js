@@ -1,6 +1,9 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { humanizePointDate } from '../utils/point.js';
 import { CITIES } from '../mock/const.js';
+import flatpickr from 'flatpickr';
+
+import 'flatpickr/dist/flatpickr.min.css';
 
 const BLANK_POINT = {
   basePrice: 0,
@@ -81,7 +84,7 @@ const createPointFormTemplate = (point) => {
   const offersTemplate = offersByType?.offers.length ? createOffersTemplate(offersByType.offers, offers) : '';
   const datalistOptionTemplate = createDatalistOptionTemplate();
 
-  const isSubmitDisabled = !myDestination;
+  const isSubmitDisabled = (dateFrom === null || dateTo === null) || !myDestination;
 
   return (
     `<li class="trip-events__item">
@@ -149,7 +152,6 @@ const createPointFormTemplate = (point) => {
           <div class="event__field-group  event__field-group--destination">
             <label class="event__label  event__type-output" for="event-destination-${destination ? destination : '1'}">
               ${type}
-              ${isSubmitDisabled ? '-' : ''}
             </label>
             <input class="event__input  event__input--destination" id="event-destination-${destination ? destination : '1'}" type="text" name="event-destination" value="${myDestination ? myDestination.name : ''}" list="destination-list-${destination ? destination : '1'}">
             <datalist id="destination-list-${destination ? destination : '1'}">
@@ -194,6 +196,8 @@ export default class PointFormView extends AbstractStatefulView {
   #destinations = null;
   #handleFormSubmit = null;
   #handleCloseEditClick = null;
+  #dateFromDatepicker = null;
+  #dateToDatepicker = null;
 
   constructor({ point = BLANK_POINT, allOffers = [], destinations = [], onFormSubmit, onCloseEditClick }) {
     super();
@@ -210,13 +214,27 @@ export default class PointFormView extends AbstractStatefulView {
     return createPointFormTemplate(this._state);
   }
 
+  removeElement() {
+    super.removeElement();
+
+    if (this.#dateFromDatepicker) {
+      this.#dateFromDatepicker = null;
+    }
+
+    if (this.#dateToDatepicker) {
+      this.#dateToDatepicker = null;
+    }
+  }
+
   _restoreHandlers = () => {
     this.element.querySelector('form').addEventListener('submit', this.#submitClickHandler);
     this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#closeEditClickHandler);
     this.element.querySelector('.event__input--price').addEventListener('input', this.#priceInputHandler);
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationChangeHandler);
     this.element.querySelectorAll('.event__type-input[name="event-type"]').forEach((item) => item.addEventListener('click', this.#typeClickHandler));
-    this.element.querySelector('#event-start-time-1').addEventListener('input', this.#dateFromChangeHandler);
+
+    this.#setDateFromDatepicker();
+    this.#setDateToDatepicker();
   };
 
   #submitClickHandler = (evt) => {
@@ -251,12 +269,45 @@ export default class PointFormView extends AbstractStatefulView {
     });
   };
 
-  #dateFromChangeHandler = (evt) => {
-    evt.preventDefault();
-    // this._setState({
-    //   dateFrom: humanizePointDate(new Date(evt.target.value), 'DD/MM/YY HH:mm').get('month'),
-    // });
+  #dateFromChangeHandler = ([date]) => {
+    this.updateElement({
+      dateFrom: date,
+    });
   };
+
+  #dateToChangeHandler = ([date]) => {
+    this.updateElement({
+      dateTo: date,
+    });
+  };
+
+  #setDateFromDatepicker() {
+    if (this._state.dateFrom) {
+      this.#dateFromDatepicker = flatpickr(
+        this.element.querySelector('#event-start-time-1'),
+        {
+          dateFormat: 'd/m/y H:i',
+          enableTime: true,
+          defaultDate: this._state.dateFrom,
+          onChange: this.#dateFromChangeHandler,
+        },
+      );
+    }
+  }
+
+  #setDateToDatepicker() {
+    if (this._state.dateTo) {
+      this.#dateToDatepicker = flatpickr(
+        this.element.querySelector('#event-end-time-1'),
+        {
+          dateFormat: 'd/m/y H:i',
+          enableTime: true,
+          defaultDate: this._state.dateTo,
+          onChange: this.#dateToChangeHandler,
+        },
+      );
+    }
+  }
 
   static parsePointToState(point, allOffers, destinations) {
     return {
