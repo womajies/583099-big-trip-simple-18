@@ -32,4 +32,6 @@ const sortPointByPrice = (pointA, pointB) => {
   return weight ?? pointB.basePrice - pointA.basePrice;
 };
 
-export { humanizePointDate, isPointExpired, sortPointByDate, sortPointByPrice };
+const isValuesEqual = (a, b) => a === b;
+
+export { humanizePointDate, isPointExpired, sortPointByDate, sortPointByPrice, isValuesEqual };

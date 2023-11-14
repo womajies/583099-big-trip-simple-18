@@ -1,6 +1,8 @@
 import PointView from '../view/point-view.js';
 import PointFormView from '../view/point-form-view.js';
 import { render, remove, replace } from '../framework/render.js';
+import { UserAction, UpdateType } from '../const.js';
+import { isValuesEqual } from '../utils/point.js';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -46,12 +48,10 @@ export default class PointPresenter {
       return;
     }
 
-    // if (this.#pointListContainer.contains(prevPointComponent.element)) {
     if (this.#mode === Mode.DEFAULT) {
       replace(this.#pointComponent, prevPointComponent);
     }
 
-    // if (this.#pointListContainer.contains(prevPointFormComponent.element)) {
     if (this.#mode === Mode.EDITING) {
       replace(this.#pointFormComponent, prevPointFormComponent);
     }
@@ -78,7 +78,7 @@ export default class PointPresenter {
       destinations: this.#destinations,
       onFormSubmit: this.#handleFormSubmit,
       onCloseEditClick: this.#handleCloseEditClick,
-      onChangeTypeClick: this.#handleChangeTypeClick,
+      onDeleteClick: this.#handleDeleteClick,
     });
 
     replace(this.#pointFormComponent, this.#pointComponent);
@@ -105,16 +105,30 @@ export default class PointPresenter {
     this.#replacePointToForm();
   };
 
-  #handleFormSubmit = (point) => {
-    this.#handleDataChange(point);
+  #handleFormSubmit = (update) => {
+    const isMinorUpdate =
+      !isValuesEqual(this.#point.dateFrom, update.dateFrom) ||
+      !isValuesEqual(this.#point.dateTo, update.dateTo) ||
+      !isValuesEqual(this.#point.basePrice, update.basePrice);
+
     this.#replaceFormToPoint();
+
+    this.#handleDataChange(
+      UserAction.UPDATE_POINT,
+      isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,
+      update,
+    );
   };
 
   #handleCloseEditClick = () => {
     this.#replaceFormToPoint();
   };
 
-  #handleChangeTypeClick = (type) => {
-    this.#handleDataChange({...this.#point, type: type});
+  #handleDeleteClick = (point) => {
+    this.#handleDataChange(
+      UserAction.DELETE_POINT,
+      UpdateType.MINOR,
+      point,
+    );
   };
 }

@@ -7,6 +7,4 @@ const getRandomInteger = (a = 0, b = 1) => {
 
 const getRandomArrayElement = (items) => items?.length ? items[Math.floor(Math.random() * items.length)] : 0;
 
-const updateItem = (items, update) => items.map((item) => item.id === update.id ? update : item);
-
-export { getRandomInteger, getRandomArrayElement, updateItem };
+export { getRandomInteger, getRandomArrayElement };

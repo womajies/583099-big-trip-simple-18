@@ -2,6 +2,7 @@ import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { humanizePointDate } from '../utils/point.js';
 import { CITIES } from '../mock/const.js';
 import flatpickr from 'flatpickr';
+import he from 'he';
 
 import 'flatpickr/dist/flatpickr.min.css';
 
@@ -9,8 +10,8 @@ const BLANK_POINT = {
   basePrice: 0,
   dateFrom: new Date(),
   dateTo: new Date(),
-  destination: 1,
-  offers: [11, 12, 13],
+  destination: null,
+  offers: [],
   type: 'flight'
 };
 
@@ -20,8 +21,8 @@ const createOffersTemplate = (offers, checkedOffers) => {
   for (const { id, title, price } of offers) {
     offersList += `
       <div class="event__offer-selector">
-        <input class="event__offer-checkbox visually-hidden" id="event-offer-luggage-${id}" type="checkbox" name="event-offer-luggage" ${checkedOffers.includes(id) ? 'checked' : ''}>
-        <label class="event__offer-label" for="event-offer-luggage-${id}">
+        <input class="event__offer-checkbox visually-hidden" id="${id}" type="checkbox" name="event-offer-luggage" ${checkedOffers.includes(id) ? 'checked' : ''}>
+        <label class="event__offer-label" for="${id}">
           <span class="event__offer-title">${title}</span>
           &plus;&euro;&nbsp;
           <span class="event__offer-price">${price}</span>
@@ -153,7 +154,7 @@ const createPointFormTemplate = (point) => {
             <label class="event__label  event__type-output" for="event-destination-${destination ? destination : '1'}">
               ${type}
             </label>
-            <input class="event__input  event__input--destination" id="event-destination-${destination ? destination : '1'}" type="text" name="event-destination" value="${myDestination ? myDestination.name : ''}" list="destination-list-${destination ? destination : '1'}">
+            <input class="event__input  event__input--destination" id="event-destination-${destination ? destination : '1'}" type="text" name="event-destination" value="${myDestination ? he.encode(myDestination.name) : ''}" list="destination-list-${destination ? destination : '1'}">
             <datalist id="destination-list-${destination ? destination : '1'}">
               ${datalistOptionTemplate}
             </datalist>
@@ -196,16 +197,18 @@ export default class PointFormView extends AbstractStatefulView {
   #destinations = null;
   #handleFormSubmit = null;
   #handleCloseEditClick = null;
+  #handleDeleteClick = null;
   #dateFromDatepicker = null;
   #dateToDatepicker = null;
 
-  constructor({ point = BLANK_POINT, allOffers = [], destinations = [], onFormSubmit, onCloseEditClick }) {
+  constructor({ point = BLANK_POINT, allOffers = [], destinations = [], onFormSubmit, onCloseEditClick, onDeleteClick }) {
     super();
     this._setState(PointFormView.parsePointToState(point, allOffers, destinations));
     this.#allOffers = allOffers;
     this.#destinations = destinations;
     this.#handleFormSubmit = onFormSubmit;
     this.#handleCloseEditClick = onCloseEditClick;
+    this.#handleDeleteClick = onDeleteClick;
 
     this._restoreHandlers();
   }
@@ -228,10 +231,12 @@ export default class PointFormView extends AbstractStatefulView {
 
   _restoreHandlers = () => {
     this.element.querySelector('form').addEventListener('submit', this.#submitClickHandler);
+    this.element.querySelector('.event__reset-btn').addEventListener('click', this.#deleteClickHandler);
     this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#closeEditClickHandler);
     this.element.querySelector('.event__input--price').addEventListener('input', this.#priceInputHandler);
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationChangeHandler);
     this.element.querySelectorAll('.event__type-input[name="event-type"]').forEach((item) => item.addEventListener('click', this.#typeClickHandler));
+    this.element.querySelectorAll('.event__offer-checkbox').forEach((item) => item.addEventListener('change', this.#offerChangeHandler));
 
     this.#setDateFromDatepicker();
     this.#setDateToDatepicker();
@@ -247,6 +252,11 @@ export default class PointFormView extends AbstractStatefulView {
     this.#handleCloseEditClick();
   };
 
+  #deleteClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleDeleteClick(PointFormView.parseStateToPoint(this._state));
+  };
+
   #priceInputHandler = (evt) => {
     evt.preventDefault();
     this._setState({
@@ -256,8 +266,11 @@ export default class PointFormView extends AbstractStatefulView {
 
   #destinationChangeHandler = (evt) => {
     evt.preventDefault();
+    const currentDestination = this.#destinations.find((item) => item.name.toLowerCase() === evt.target.value.toLowerCase());
+
     this.updateElement({
-      myDestination: this.#destinations.find((item) => item.name.toLowerCase() === evt.target.value.toLowerCase()),
+      destination: currentDestination.id,
+      myDestination: currentDestination,
     });
   };
 
@@ -265,7 +278,14 @@ export default class PointFormView extends AbstractStatefulView {
     evt.preventDefault();
     this.updateElement({
       type: evt.target.value,
+      offers: [],
       offersByType: this.#allOffers.find((item) => item.type === evt.target.value),
+    });
+  };
+
+  #offerChangeHandler = (evt) => {
+    this._setState({
+      offers: evt.target.checked ? [...this._state.offers, Number(evt.target.id)] : [...this._state.offers.filter((id) => id !== Number(evt.target.id))],
     });
   };
 
