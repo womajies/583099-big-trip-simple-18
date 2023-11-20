@@ -7,7 +7,7 @@ import he from 'he';
 import 'flatpickr/dist/flatpickr.min.css';
 
 const BLANK_POINT = {
-  basePrice: 0,
+  basePrice: null,
   dateFrom: new Date(),
   dateTo: new Date(),
   destination: null,
@@ -77,7 +77,7 @@ const createDatalistOptionTemplate = () => {
 };
 
 const createPointFormTemplate = (point) => {
-  const { basePrice, type, offers, destination, dateFrom, dateTo, offersByType, myDestination } = point;
+  const { basePrice, type, offers, destination, dateFrom, dateTo, offersByType, myDestination, isDisabled, isSaving, isDeleting } = point;
 
   const DATE_FORMAT = 'DD/MM/YY HH:mm';
 
@@ -85,7 +85,7 @@ const createPointFormTemplate = (point) => {
   const offersTemplate = offersByType?.offers.length ? createOffersTemplate(offersByType.offers, offers) : '';
   const datalistOptionTemplate = createDatalistOptionTemplate();
 
-  const isSubmitDisabled = (dateFrom === null || dateTo === null) || !myDestination;
+  const isSubmitDisabled = (dateFrom === null || dateTo === null) || !myDestination || !basePrice;
 
   return (
     `<li class="trip-events__item">
@@ -96,7 +96,7 @@ const createPointFormTemplate = (point) => {
               <span class="visually-hidden">Choose event type</span>
               <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
             </label>
-            <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
+            <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox" ${isDisabled ? 'disabled' : ''}>
 
             <div class="event__type-list">
               <fieldset class="event__type-group">
@@ -154,7 +154,7 @@ const createPointFormTemplate = (point) => {
             <label class="event__label  event__type-output" for="event-destination-${destination ? destination : '1'}">
               ${type}
             </label>
-            <input class="event__input  event__input--destination" id="event-destination-${destination ? destination : '1'}" type="text" name="event-destination" value="${myDestination ? he.encode(myDestination.name) : ''}" list="destination-list-${destination ? destination : '1'}">
+            <input class="event__input  event__input--destination" id="event-destination-${destination ? destination : '1'}" type="text" name="event-destination" value="${myDestination ? he.encode(myDestination.name) : ''}" list="destination-list-${destination ? destination : '1'}" ${isDisabled ? 'disabled' : ''}>
             <datalist id="destination-list-${destination ? destination : '1'}">
               ${datalistOptionTemplate}
             </datalist>
@@ -173,11 +173,11 @@ const createPointFormTemplate = (point) => {
               <span class="visually-hidden">Price</span>
               &euro;
             </label>
-            <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${basePrice}">
+            <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${Number(basePrice)}">
           </div>
 
-          <button class="event__save-btn  btn  btn--blue" type="submit" ${isSubmitDisabled ? 'disabled' : ''}>Save</button>
-          <button class="event__reset-btn" type="reset">Delete</button>
+          <button class="event__save-btn  btn  btn--blue" type="submit" ${isSubmitDisabled ? 'disabled' : ''}>${isSaving ? 'Saving...' : 'Save'}</button>
+          <button class="event__reset-btn" type="reset">${isDeleting ? 'Deleting...' : 'Delete'}</button>
           <button class="event__rollup-btn" type="button">
             <span class="visually-hidden">Open event</span>
           </button>
@@ -259,8 +259,8 @@ export default class PointFormView extends AbstractStatefulView {
 
   #priceInputHandler = (evt) => {
     evt.preventDefault();
-    this._setState({
-      basePrice: evt.target.value,
+    this.updateElement({
+      basePrice: Number(evt.target.value),
     });
   };
 
@@ -334,6 +334,9 @@ export default class PointFormView extends AbstractStatefulView {
       ...point,
       offersByType: allOffers.find((item) => item.type === point.type),
       myDestination: destinations.find((item) => item.id === point.destination),
+      isDisabled: false,
+      isSaving: false,
+      isDeleting: false,
     };
   }
 
@@ -350,6 +353,9 @@ export default class PointFormView extends AbstractStatefulView {
 
     delete point.offersByType;
     delete point.myDestination;
+    delete point.isDisabled;
+    delete point.isSaving;
+    delete point.isDeleting;
 
     return point;
   }

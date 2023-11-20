@@ -51,14 +51,31 @@ export default class AddPointPresenter {
     document.removeEventListener('keydown', this.#onEscKeyDown);
   }
 
+  setSaving() {
+    this.#pointFormComponent.updateElement({
+      isDisabled: true,
+      isSaving: true,
+    });
+  }
+
+  setAborting() {
+    const resetFormState = () => {
+      this.#pointFormComponent.updateElement({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    this.#pointFormComponent.shake(resetFormState);
+  }
+
   #handleFormSubmit = (point) => {
     this.#handleDataChange(
       UserAction.ADD_POINT,
       UpdateType.MINOR,
       { id: nanoid(), ...point }
     );
-
-    this.destroy();
   };
 
   #handleDeleteClick = () => {

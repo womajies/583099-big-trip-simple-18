@@ -2,9 +2,9 @@ import AbstractView from '../framework/view/abstract-view.js';
 import { FilterType } from '../const.js';
 
 const emptyListTextType = {
-  [FilterType.EVERYTHING]: 'Click «ADD NEW TASK» in menu to create your first task',
-  [FilterType.PAST]: 'There are no past tasks now',
-  [FilterType.FUTURE]: 'There are no future tasks now',
+  [FilterType.EVERYTHING]: 'Click «ADD NEW POINT» in menu to create your first point',
+  [FilterType.PAST]: 'There are no past points now',
+  [FilterType.FUTURE]: 'There are no future points now',
 };
 
 const createPointListEmptyTemplate = (filterType) => {

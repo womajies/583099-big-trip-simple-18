@@ -71,6 +71,37 @@ export default class PointPresenter {
     }
   }
 
+  setSaving() {
+    this.#pointFormComponent.updateElement({
+      isDisabled: true,
+      isSaving: true,
+    });
+  }
+
+  setDeleting() {
+    this.#pointFormComponent.updateElement({
+      isDisabled: true,
+      isDeleting: true,
+    });
+  }
+
+  setAborting() {
+    if (this.#mode === Mode.DEFAULT) {
+      this.#pointFormComponent.shake();
+      return;
+    }
+
+    const resetFormState = () => {
+      this.#pointFormComponent.updateElement({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    this.#pointFormComponent.shake(resetFormState);
+  }
+
   #replacePointToForm() {
     this.#pointFormComponent = new PointFormView({
       point: this.#point,
@@ -111,7 +142,7 @@ export default class PointPresenter {
       !isValuesEqual(this.#point.dateTo, update.dateTo) ||
       !isValuesEqual(this.#point.basePrice, update.basePrice);
 
-    this.#replaceFormToPoint();
+    // this.#replaceFormToPoint();
 
     this.#handleDataChange(
       UserAction.UPDATE_POINT,
