@@ -1,5 +1,5 @@
 const POINT_TYPES = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
-const CITIES = ['Limassol', 'Makhachkala', 'London', 'New York', 'Dubai', 'Tokio'];
+const CITIES = ['Chamonix', 'Geneva', 'Amsterdam', 'Helsinki', 'Oslo', 'Kopenhagen', 'Den Haag', 'Rotterdam', 'Saint Petersburg', 'Moscow', 'Sochi', 'Tokio', 'Kioto', 'Nagasaki', 'Hiroshima', 'Berlin', 'Munich', 'Frankfurt', 'Vien', 'Rome', 'Naples', 'Venice', 'Milan', 'Monaco', 'Paris', 'Barcelona', 'Valencia', 'Madrid'];
 const DESCRIPTIONS = [
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
   'Cras aliquet varius magna, non porta ligula feugiat eget.',
@@ -14,4 +14,4 @@ const Price = {
   MAX: 250
 };
 
-export {POINT_TYPES, CITIES, DESCRIPTIONS, Price};
+export { POINT_TYPES, CITIES, DESCRIPTIONS, Price };
